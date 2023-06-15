@@ -7,7 +7,11 @@ ENV CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-
 
 # airflow 설치
 RUN pip3 install "apache-airflow[celery]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
-RUN pip3 install psycopg2-binary redis
+RUN pip3 install psycopg2-binary redis thrift happybase
+
+
+# airflow에서 사용할 python install
+
 
 # [core]
 # executor = CeleryExecutor
@@ -28,9 +32,14 @@ RUN mkdir -p ${AIRFLOW_HOME}/logs
 RUN mkdir -p ${AIRFLOW_HOME}/config
 RUN mkdir -p ${AIRFLOW_HOME}/plugins
 
+#TEST용
+RUN mkdir -p ${AIRFLOW_HOME}/news_data
+COPY data ${AIRFLOW_HOME}/news_data
+
 # scripts 복사 및 권한 설정
 ADD scripts /scripts
 RUN chmod -R a+x /scripts
 
 # 8080 : airflow web ui
 EXPOSE 8080
+
